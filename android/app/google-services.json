@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "744340867632",
+    "firebase_url": "https://cmbootstrapflutter-default-rtdb.firebaseio.com",
+    "project_id": "cmbootstrapflutter",
+    "storage_bucket": "cmbootstrapflutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744340867632:android:70c4cb2393210a88f47bf5",
+        "android_client_info": {
+          "package_name": "com.example.cm_bootstrap_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLrqbc8SrZDqCvS8p8BPy6i1ng9rBAfew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
