@@ -68,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'CodeLingo Kids',
+                'JoojooCodo',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
