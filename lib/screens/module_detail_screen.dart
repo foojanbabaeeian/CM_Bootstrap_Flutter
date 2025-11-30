@@ -5,6 +5,8 @@ import '../models/lesson.dart';
 import '../content.dart';
 import 'lesson_screen.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ModuleDetailScreen extends StatelessWidget {
   final Module module;
 
@@ -39,39 +41,110 @@ class ModuleDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
 
             // List of lessons
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: lessons.length,
+            //     itemBuilder: (context, index) {
+            //       final lesson = lessons[index];
+            //
+            //       return Card(
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(12),
+            //         ),
+            //         margin: const EdgeInsets.only(bottom: 10),
+            //         child: ListTile(
+            //           leading: CircleAvatar(
+            //             child: Text('${lesson.order}'),
+            //           ),
+            //           title: Text(lesson.title),
+            //           subtitle: Text(
+            //             lesson.content,
+            //             maxLines: 2,
+            //             overflow: TextOverflow.ellipsis,
+            //           ),
+            //           onTap: () {
+            //             // print('Tapped lesson: ${lesson.id}');
+            //             Navigator.of(context).push(
+            //               MaterialPageRoute(
+            //                 builder: (_) => LessonScreen(
+            //                   module: module,
+            //                   lesson: lesson,
+            //                 ),
+            //               ),
+            //             );
+            //           },
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             Expanded(
-              child: ListView.builder(
-                itemCount: lessons.length,
-                itemBuilder: (context, index) {
-                  final lesson = lessons[index];
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('modules')
+                    .doc(module.id)
+                    .collection('lessons')
+                    .orderBy('order')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text('${lesson.order}'),
-                      ),
-                      title: Text(lesson.title),
-                      subtitle: Text(
-                        lesson.content,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () {
-                        // print('Tapped lesson: ${lesson.id}');
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => LessonScreen(
-                              module: module,
-                              lesson: lesson,
-                            ),
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Could not load lessons 🐤'),
+                    );
+                  }
+
+                  final docs = snapshot.data?.docs ?? [];
+
+                  if (docs.isEmpty) {
+                    return const Center(
+                      child: Text('No lessons yet.'),
+                    );
+                  }
+
+                  final lessons = docs
+                      .map((doc) => Lesson.fromDoc(doc))
+                      .toList()
+                    ..sort((a, b) => a.order.compareTo(b.order));
+
+                  return ListView.builder(
+                    itemCount: lessons.length,
+                    itemBuilder: (context, index) {
+                      final lesson = lessons[index];
+
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Text('${lesson.order}'),
                           ),
-                        );
-                      },
-                    ),
+                          title: Text(lesson.title),
+                          subtitle: Text(
+                            lesson.content,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => LessonScreen(
+                                  module: module,
+                                  lesson: lesson,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   );
                 },
               ),
