@@ -18,7 +18,7 @@ class ModuleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get lessons for this module from our fake data
-    final List<Lesson> lessons = lessonsByModule[module.id] ?? [];
+    // final List<Lesson> lessons = lessonsByModule[module.id] ?? [];
 
     return Scaffold(
       appBar: AppBar(
